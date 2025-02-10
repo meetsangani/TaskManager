@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Trash } from 'react-feather';
+import { Plus, Trash } from 'react-feather';
 import settingImage from './settingimage.jpg';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -22,30 +22,15 @@ const TaskManager = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
-  const [user, setUser] = useState({ _id: null, name: '' });
   const [selectedTaskDescription, setSelectedTaskDescription] = useState({ title: '', description: '', status: 'Pending' });
   const [taskDescriptions, setTaskDescriptions] = useState([]);
-  const [selectedUserName, setSelectedUserName] = useState('');
-  const [users, setUsers] = useState([]);
+  const [users] = useState([]);
   const [loggedInUser, setLoggedInUser] = useState({});
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const token = localStorage.getItem('token');
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/api/user-details', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setUser({ _id: response.data.data._id, name: response.data.data.name });
-      } catch (error) {
-        console.error('API Error:', error.message);
-      }
-    };
-
     const fetchTaskDescriptions = async () => {
       try {
         const response = await axios.get('http://localhost:8000/api/descriptions');
@@ -56,7 +41,6 @@ const TaskManager = () => {
     };
 
     if (token) {
-      fetchUserData();
       fetchTaskDescriptions();
     }
   }, [token]);
@@ -87,7 +71,7 @@ const TaskManager = () => {
       learning: learningNotes,
       startTime: startTime,
       endTime: endTime,
-      user: user._id,
+      // user: user._id,
       descriptionId: selectedTask,
       timeSlots: timeBlocks.map((block) => ({
         startTime: block.time.split(' to ')[0],
@@ -194,14 +178,6 @@ const TaskManager = () => {
     const selectedTaskData = taskDescriptions.find(task => task._id === taskId);
     setSelectedTaskDescription({ title: selectedTaskData?.title, description: selectedTaskData?.description, status: selectedTaskData?.status });
     const user = users.find(user => user._id === selectedTaskData?.user);
-    setUser(user);
-  };
-
-  const handleUserChange = (e) => {
-    const selectedUserId = e.target.value;
-    setSelectedUserName(selectedUserId);
-    const user = users.find(user => user._id === selectedUserId);
-    setUser(user);
   };
 
   const handleLogout = () => {
@@ -250,8 +226,7 @@ const TaskManager = () => {
 
       <div style={styles.content}>
         <div style={styles.taskSection}>
-          <h2>Welcome, {user.name}</h2>
-
+          <h2>Welcome, {loggedInUser.name}</h2>
           <div style={styles.learningNotesContainer}>
             <h3 style={styles.sectionTitle}>Learning Notes:</h3>
             <textarea

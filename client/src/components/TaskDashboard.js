@@ -379,8 +379,8 @@ const TaskDashboard = () => {
                       <div className="card" key={index}>
                         <h4 style={{ fontSize: '20px' }}>{format(new Date(task.createdAt), 'dd-MM-yyyy')}</h4>
                         <hr />
-                        <h3>{task.descriptions ? task.descriptions.title : 'No Title'}</h3>
-                        <p>{task.descriptions ? task.descriptions.description : 'No Description'}</p> 
+                        <h3><strong>Title :</strong>{task.descriptions ? task.descriptions.title : 'No Title'}</h3>
+                        <p><strong>Description :</strong>{task.descriptions ? task.descriptions.description : 'No Description'}</p> 
                         <p><strong>Assigned User:</strong> {getUserById(task.user)}</p>
                         <p><strong>Learning:</strong> {task.learning}</p>
                         <p><strong>Duration:</strong> {format(new Date(task.startTime), 'HH:mm:ss')} - {format(new Date(task.endTime), 'HH:mm:ss')}</p>
